@@ -33,17 +33,21 @@ app.get('/create',(req,res) => {
 })
 
 app.post('/api/v1/balance',(req,res)=>{
+    if(req.body.coin == "ether"){
     try
     {
-        //Logic Goes Here
+        let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
+        provider.getBalance(address).then((balance) => {
+        let etherString = ethers.utils.formatEther(balance);
+        console.log(etherString);
+        });
     }
     catch(err)
     {
         console.error(err);
         return res.status(500).send({error:err});
     }
-
-
+}
 })
 
 app.post('/api/v1/send',(req,res)=>{
