@@ -5,9 +5,11 @@ const compression = require('compression');
 const ethers = require('ethers');
 const app = express();
 const bitcoin = require("bitcoinjs-lib");
+const fetch = require('node-fetch');
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(compression());
+const fetch = require('node-fetch');
 
 const PORT = process.env.PORT || 3000;
 
@@ -31,34 +33,18 @@ app.get('/create',(req,res) => {
     });
 })
 
-app.post('/api/v1/balance',(req,res)=>{
-    try
-    {
-    
-    }
-    catch(err)
-    {
-        console.error(err);
-        return res.status(500).send({error:err});
-    }
-})
-
 app.post('/api/v1/send',(req,res)=>{
     console.log(req);
     try
     {
-        let txb = new bitcoin.TransactionBuilder(bitcoin.networks.testnet);
-        let txid = ""; //transaction id
-        let outn = 0;  // n out
-        txb.addInput(txid, outn);
-        txb.addOutput(req.body.to,req.body.amount); //first argument is address that will receive the funds, the second is the value to send in satoshis after deducting the mining fees. In this example there are 5000 satoshis in mining fees (40000-35000=5000)
-        const sender = bitcoin.ECPair.fromWIF(wif, bitcoin.networks.testnet);
-        txb.sign(0, sender);
-        let tx = txb.build();
-        let txhex = tx.toHex();
-        console.log (txhex);
-        return res.send({raw : txhex});
-
+        const body = req.body;
+        fetch(`https://api.blockcypher.com/v1/btc/main/txs/micro?token=ec2af5def5a44966b538fe71222344f6`, {
+            method: 'post',
+            body:    JSON.stringify(body),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => res.json())
+        .then(json => console.log(json));
     }
     catch(err)
     {
