@@ -47,12 +47,20 @@ app.post('/api/v1/send',(req,res)=>{
     console.log(req);
     try
     {
-        var tx = new bitcoin.TransactionBuilder();
-        tx.addOutput(req.body.to, req.body.amount);
-        tx.sign(0,req.body.key);
-        const body = tx.build().toHex();
-        console.log(body);
-        return res.send({raw : body});
+        let NETWORK = bitcoin.networks.bitcoin; 
+        let txb = new bitcoin.TransactionBuilder(NETWORK);
+        let txid = ""; //transaction id
+        let outn = 0;  // n out
+        txb.addInput(txid, outn);
+        txb.addOutput(req.body.to,req.body.amount); //first argument is address that will receive the funds, the second is the value to send in satoshis after deducting the mining fees. In this example there are 5000 satoshis in mining fees (40000-35000=5000)
+        let WIF = req.body.key; //private key of the address associated with this unspent output
+        let keypair = bitcoin.ECPair.fromWIF(WIF, NETWORK);
+        txb.sign(0, keypair);
+        let tx = txb.build();
+        let txhex = tx.toHex();
+        console.log (txhex);
+        return res.send({raw : txhex});
+
     }
     catch(err)
     {
