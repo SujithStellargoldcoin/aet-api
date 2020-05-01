@@ -47,8 +47,7 @@ app.post('/api/v1/send',(req,res)=>{
     console.log(req);
     try
     {
-        let NETWORK = bitcoin.networks.bitcoin; 
-        let txb = new bitcoin.TransactionBuilder(NETWORK);
+        let txb = new bitcoin.TransactionBuilder();
         let txid = ""; //transaction id
         let outn = 0;  // n out
         txb.addInput(txid, outn);
