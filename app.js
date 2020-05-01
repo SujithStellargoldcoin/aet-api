@@ -9,7 +9,6 @@ const fetch = require('node-fetch');
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(compression());
-const fetch = require('node-fetch');
 
 const PORT = process.env.PORT || 3000;
 
