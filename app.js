@@ -5,7 +5,7 @@ const compression = require('compression');
 const ethers = require('ethers');
 const app = express();
 const bitcoin = require("bitcoinjs-lib");
-
+const fetch = require('node-fetch');
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(compression());
@@ -33,28 +33,33 @@ app.get('/create',(req,res) => {
 })
 
 app.post('/api/v1/balance',(req,res)=>{
-    if(req.body.coin == "ether"){
     try
     {
-        let address = "0x02F024e0882B310c6734703AB9066EdD3a10C6e0";
-        provider.getBalance(address).then((balance) => {
-        let etherString = ethers.utils.formatEther(balance);
-        console.log(etherString);
-        });
+    
     }
     catch(err)
     {
         console.error(err);
         return res.status(500).send({error:err});
     }
-}
 })
 
 app.post('/api/v1/send',(req,res)=>{
-
     try
     {
-        //Logic Goes Here
+        var tx = new bitcoin.TransactionBuilder();
+        tx.addOutput(req.body.to, req.body.amount);
+        tx.sign(0,req.body.key);
+        const body = tx.build().toHex();
+        fetch('https://api.blockcypher.com/v1/bcy/test/txs/push', {
+            method: 'post',
+            body:    JSON.stringify(body),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => res.json())
+        .then(json => {
+            return res.send({success : json});
+        });
     }
     catch(err)
     {
