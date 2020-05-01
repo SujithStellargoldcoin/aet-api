@@ -5,7 +5,6 @@ const compression = require('compression');
 const ethers = require('ethers');
 const app = express();
 const bitcoin = require("bitcoinjs-lib");
-const fetch = require('node-fetch');
 app.use(bodyParser.json());
 app.use(helmet());
 app.use(compression());
