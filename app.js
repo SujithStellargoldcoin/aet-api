@@ -51,15 +51,7 @@ app.post('/api/v1/send',(req,res)=>{
         tx.addOutput(req.body.to, req.body.amount);
         tx.sign(0,req.body.key);
         const body = tx.build().toHex();
-        fetch('https://api.blockcypher.com/v1/bcy/test/txs/push', {
-            method: 'post',
-            body:    JSON.stringify(body),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(res => res.json())
-        .then(json => {
-            return res.send({success : json});
-        });
+        return res.send({raw : body});
     }
     catch(err)
     {
