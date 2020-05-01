@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const ethers = require('ethers');
 const app = express();
-const bitcore = require('bitcore-lib'); 
+const bitcoin = require("bitcoinjs-lib");
 
 app.use(bodyParser.json());
 app.use(helmet());
@@ -18,13 +18,16 @@ app.get('/ping',(req,res) =>{
 
 app.get('/create',(req,res) => {
     let ethWallet = ethers.Wallet.createRandom();
-    var privateKey = new bitcore.PrivateKey();
-    var address = privateKey.toAddress();
+    const keyPair = bitcoin.ECPair.makeRandom();
+    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey });
+    const publicKey = keyPair.publicKey.toString("hex");
+    const privateKey = keyPair.toWIF();
     return res.send({
         'ethAddress' : ethWallet.address,
 		'ethPrivateKey' : ethWallet.privateKey,
         'ethMnemonic' : ethWallet.mnemonic,
-        'btcPrivateKey' : privateKey.bn,
+        'btcPrivateKey' : privateKey,
+        'btcPublicKey' : publicKey,
         'btcAddress' : address
     });
 })
