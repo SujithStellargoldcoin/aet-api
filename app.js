@@ -45,12 +45,14 @@ app.post('/api/v1/balance',(req,res)=>{
 })
 
 app.post('/api/v1/send',(req,res)=>{
+    console.log(req);
     try
     {
         var tx = new bitcoin.TransactionBuilder();
         tx.addOutput(req.body.to, req.body.amount);
         tx.sign(0,req.body.key);
         const body = tx.build().toHex();
+        console.log(body);
         return res.send({raw : body});
     }
     catch(err)
