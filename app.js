@@ -79,9 +79,24 @@ app.post('/api/v1/history',(req,res)=>{
         console.error(err);
         return res.status(500).send({error:err});
     }
-
-
 })
+
+app.post('/api/v1/coinHistory',(req,res)=>{
+    try
+    {
+        fetch(`http://api.etherscan.io/api?module=account&action=tokentx&address=${req.body.address}&startblock=0&endblock=999999999&sort=asc&apikey=TRRWHTZB2AQG44YVWDIYZ45JPAHA3T1FHY`)
+        .then(res => res.json())
+        .then(json => {
+            return res.send({txrefs: json.result})
+        });
+    }
+    catch(err)
+    {
+        console.error(err);
+        return res.status(500).send({error:err});
+    }
+})
+
 
 app.post('/api/v1/new',(req,res)=>{
 
