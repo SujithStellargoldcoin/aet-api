@@ -78,7 +78,6 @@ app.post('/api/v1/send/eth',(req,res)=>{
         };
         
         let sendPromise = wallet.sendTransaction(tx);
-        
         sendPromise.then((tx) => {
             console.log(tx);
         });
@@ -99,7 +98,12 @@ app.post('/api/v1/history',(req,res)=>{
         fetch(`https://api.blockcypher.com/v1/btc/main/addrs/${req.body.address}`)
         .then(res => res.json())
         .then(json => {
+            if(json.txrefs.length !== 0){
             return res.send({txrefs: json.txrefs})
+            }
+            else{
+                return res.send({txrefs:[]})
+            }
         });
     }
     catch(err)
