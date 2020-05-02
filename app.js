@@ -162,18 +162,18 @@ app.post('/api/v1/exchange/btc',(req,res)=>{
             try{
                 aetContract.transfer(`${req.body.aetReciever}`,amount)
                 .then(res=>{
-                    console.log(res);
+                    return res.send({success : true})
                 })
                 .catch(err=>{
-                    alert(err);
+                    return res.send({error : err})
                 })
             }
             catch(err){
-                alert(err);
+                return res.send({error : err})
             }
         })
         .catch(err=>{
-            console.log(err);
+            return res.send({error : err})
         })
 
     }
@@ -202,19 +202,19 @@ app.post('/api/v1/exchange/eth',(req,res)=>{
                 try{
                     aetContract.transfer(`${req.body.aetReciever}`,amount)
                     .then(res=>{
-                        console.log(res);
+                        return res.send({success : true})
                     })
                     .catch(err=>{
-                        alert(err);
+                        return res.send({error : err})
                     })
                 }
                 catch(err){
-                    alert(err);
+                    return res.send({error : err})
                 }
             }
         })
         .catch(err=>{
-            alert(err);
+            return res.send({error : err})
         })
     }
     catch(err)
