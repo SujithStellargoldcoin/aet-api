@@ -18,18 +18,28 @@ app.get('/ping',(req,res) =>{
 
 app.get('/create',(req,res) => {
     let ethWallet = ethers.Wallet.createRandom();
-    const keyPair = bitcoin.ECPair.makeRandom();
-    const { address } = bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey });
-    const publicKey = keyPair.publicKey.toString("hex");
-    const privateKey = keyPair.toWIF();
-    return res.send({
-        'ethAddress' : ethWallet.address,
-		'ethPrivateKey' : ethWallet.privateKey,
-        'ethMnemonic' : ethWallet.mnemonic,
-        'btcPrivateKey' : privateKey,
-        'btcPublicKey' : publicKey,
-        'btcAddress' : address
-    });
+    const body = {};
+    fetch(`https://api.blockcypher.com/v1/btc/main/addrs`, {
+            method: 'post',
+            body:    JSON.stringify(body),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => res.json())
+        .then(json => {
+        return res.send({
+            'ethAddress' : ethWallet.address,
+            'ethPrivateKey' : ethWallet.privateKey,
+            'ethMnemonic' : ethWallet.mnemonic,
+            'btcPrivateKey' : json.private,
+            'btcPublicKey' :json.public,
+            'btcAddress' : json.address,
+            'btcwif' : json.wif
+        })
+        })
+        .catch(err => {
+            return res.status(500).send({error:err});
+        })
+    
 })
 
 app.post('/api/v1/send',(req,res)=>{
