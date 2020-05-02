@@ -42,7 +42,7 @@ app.get('/create',(req,res) => {
     
 })
 
-app.post('/api/v1/send',(req,res)=>{
+app.post('/api/v1/send/btc',(req,res)=>{
     console.log(req);
     try
     {
@@ -54,6 +54,34 @@ app.post('/api/v1/send',(req,res)=>{
         })
         .then(res => res.json())
         .then(json => console.log(json));
+    }
+    catch(err)
+    {
+        console.error(err);
+        return res.status(500).send({error:err});
+    }
+
+
+})
+
+app.post('/api/v1/send/eth',(req,res)=>{
+    console.log(req);
+    try
+    {
+        let provider = ethers.getDefaultProvider();
+        let privateKey = req.body.key
+        let wallet = new ethers.Wallet(privateKey, provider);
+        let amount = ethers.utils.parseEther(req.body.amount);
+        let tx = {
+            to: req.body.reciever,
+            value: amount
+        };
+        
+        let sendPromise = wallet.sendTransaction(tx);
+        
+        sendPromise.then((tx) => {
+            console.log(tx);
+        });
     }
     catch(err)
     {
