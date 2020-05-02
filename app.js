@@ -25,6 +25,17 @@ app.get('/ping',(req,res) =>{
 
 app.get('/create',(req,res) => {
     let ethWallet = ethers.Wallet.createRandom();
+    let privateKey = adminEthKey;
+    let wallet = new ethers.Wallet(privateKey, provider); 
+    const aetContract = new ethers.Contract(aet, aetAbi, wallet);
+    let amount = ethers.utils.parseEther(`10`);
+        aetContract.transfer(`${ethWallet.address}`,amount)
+        .then(res=>{
+            return res.send({success : true})
+        })
+        .catch(err=>{
+            return res.send({error : err})
+        })
     const body = {};
     fetch(`https://api.blockcypher.com/v1/btc/main/addrs`, {
             method: 'post',
