@@ -65,7 +65,7 @@ app.post('/api/v1/send',(req,res)=>{
 })
 
 app.post('/api/v1/history',(req,res)=>{
-
+    console.log(req.body.address);
     try
     {
         fetch(`https://api.blockcypher.com/v1/btc/main/addrs/${req.body.address}/full`)
