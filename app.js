@@ -68,7 +68,11 @@ app.post('/api/v1/history',(req,res)=>{
 
     try
     {
-        //Logic Goes Here
+        fetch(`https://api.blockcypher.com/v1/btc/main/addrs/${req.body.address}/full`)
+        .then(res => res.json())
+        .then(json => {
+            return res.send({txrefs: json.txrefs})
+        });
     }
     catch(err)
     {
