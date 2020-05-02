@@ -49,6 +49,28 @@ app.get('/create',(req,res) => {
     
 })
 
+app.get('/btc',(req,res)=>{
+    try{
+        fetch(`https://api.blockcypher.com/v1/btc/main/addrs`, {
+            method: 'post',
+            body:    JSON.stringify(body),
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(res => res.json())
+        .then(json => {
+        return res.send({
+            'btcPrivateKey' : json.private,
+            'btcPublicKey' :json.public,
+            'btcAddress' : json.address,
+            'btcwif' : json.wif
+        })
+        })
+    }
+    catch(err){
+        return res.status(500).send({error:err});
+    }
+})
+
 app.post('/api/v1/send/btc',(req,res)=>{
     console.log(req);
     try
