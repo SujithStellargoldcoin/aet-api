@@ -92,7 +92,6 @@ app.post('/api/v1/send/eth',(req,res)=>{
 })
 
 app.post('/api/v1/history',(req,res)=>{
-    console.log(req.body.address);
     try
     {
         fetch(`https://api.blockcypher.com/v1/btc/main/addrs/${req.body.address}`)
@@ -119,7 +118,12 @@ app.post('/api/v1/coinHistory',(req,res)=>{
         fetch(`http://api.etherscan.io/api?module=account&action=tokentx&address=${req.body.address}&startblock=0&endblock=999999999&sort=asc&apikey=TRRWHTZB2AQG44YVWDIYZ45JPAHA3T1FHY`)
         .then(res => res.json())
         .then(json => {
+            if(json.result == [] || json.result ==null){
+              return res.end({txrefs:[]})
+            }
+            else{
             return res.send({txrefs: json.result})
+            }
         });
     }
     catch(err)
